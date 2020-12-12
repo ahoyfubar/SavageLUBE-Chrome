@@ -5,8 +5,8 @@ SlogBlocker is a Google Chrome Extension that rearranges and improves the DOM wh
 1. It creates duplicate page navigation buttons at the top of the comments pages.
 2. It moves the name of each writer from the end of their comment to the top.
 3. It allows you to click a writer's avatar, and select a replacement avatar of your own.
-4. It allows you to mute a writer.
-5. If a writer is muted, you can click "Show Comment" to read what they wrote.
+4. It allows you to block a writer. They no longer appear in the comments pages. You can unblock a writer in the SlogBlocker Extension settings (see below).
+5. It allows you to mute a writer. They appear, but their comments are not shown. If a writer is muted, you can click "Show Comment" to read what they wrote.
 
 # Installation
 
@@ -16,7 +16,11 @@ In Google Chrome, type `chrome://extensions/` in the browser navigation bar, and
 
 Click the _Load unpacked_ button, navigate to the folder where you unzipped the SlogBlocker Extension, and select it.
 
-When you have one or more browser extensions installed in Google Chrome, an _Extensions_ button appears to the right of the navigation bar. Click the button, and select _SlogBlocker Extension_ in order to change its settings.
+# Settings
+
+When you have one or more browser extensions installed in Google Chrome, an _Extensions_ button appears to the right of the navigation bar.
+
+Click the button, and select _SlogBlocker Extension_ in order to change its settings or unblock a writer.
 
 # Uninstallation
 

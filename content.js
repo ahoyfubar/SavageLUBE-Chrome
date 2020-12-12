@@ -99,25 +99,23 @@ function addBlockerMenu(byline, name) {
 
   var button;
 
-  if (null) {
-    button = document.createElement("button");
-    button.classList.add("block-user");
-    button.appendChild(document.createTextNode("Block user"));
-    menu.appendChild(document.createTextNode(" · "));
-    menu.appendChild(button);
+  button = document.createElement("button");
+  button.classList.add("block-user");
+  button.appendChild(document.createTextNode("Block user"));
+  menu.appendChild(document.createTextNode(" · "));
+  menu.appendChild(button);
 
-    button.onclick = function () {
-      if (confirm("Are you sure you want to block " + name + "?")) {
-        chrome.runtime.sendMessage({
-          message: "blockUser",
-          userInfo: {
-            name: name,
-            action: "hide",
-          },
-        });
-      }
-    };
-  }
+  button.onclick = function () {
+    if (confirm("Are you sure you want to block " + name + "?")) {
+      chrome.runtime.sendMessage({
+        message: "blockUser",
+        userInfo: {
+          name: name,
+          action: "hide",
+        },
+      });
+    }
+  };
 
   button = document.createElement("button");
   button.classList.add("mute-user");

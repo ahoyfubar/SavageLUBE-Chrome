@@ -85,10 +85,16 @@ function updateBlockerSettingsWithUserInfo(userInfo) {
       break;
   }
 
-  if (userIndex < 0) {
-    settings.users.push(user);
+  if (user.action === "none" && !user.avatar) {
+    if (userIndex >= 0) {
+      settings.users.splice(userIndex, 1);
+    }
   } else {
-    settings.users[userIndex] = user;
+    if (userIndex < 0) {
+      settings.users.push(user);
+    } else {
+      settings.users[userIndex] = user;
+    }
   }
 
   localStorage.setItem("slogBlockerSettings", JSON.stringify(settings));
