@@ -4,9 +4,10 @@ SlogBlocker is a Google Chrome Extension that rearranges and improves the DOM wh
 
 1. It creates duplicate page navigation buttons at the top of the comments pages.
 2. It moves the name of each writer from the end of their comment to the top.
-3. It allows you to click a writer's avatar, and select a replacement avatar of your own.
-4. It allows you to block a writer. They no longer appear in the comments pages. You can unblock a writer in the SlogBlocker Extension settings (see below).
-5. It allows you to mute a writer. They appear, but their comments are not shown. If a writer is muted, you can click "Show Comment" to read what they wrote.
+3. It turns @ mentions (e.g., fubar @123) into hyperlinks.
+4. It allows you to click a writer's avatar, and select a replacement avatar of your own.
+5. It allows you to block a writer. They no longer appear in the comments pages. You can unblock a writer in the SlogBlocker Extension settings (see below).
+6. It allows you to mute a writer. They appear, but their comments are not shown. If a writer is muted, you can click "Show Comment" to read what they wrote.
 
 # Settings
 
@@ -24,7 +25,7 @@ Click the _Load unpacked_ button, navigate to the folder where you unzipped the 
 
 # Upgrading
 
-To install a new version of SlogBlocker, download the update SlogBlocker Extension source from the [Releases](https://github.com/ahoyfubar/SlogBlocker-Chrome/releases/) page and unzip it to the same folder where you installed previously.
+To install a new version of SlogBlocker, download the updated SlogBlocker Extension source from the [Releases](https://github.com/ahoyfubar/SlogBlocker-Chrome/releases/) page and unzip it to the same folder where you installed previously.
 
 In Google Chrome, click the _Extensions_ button that appears to the right of the navigation bar, and select _Manage Extensions_ then select _SlogBlocker Extension_ and click the _Update_ button.
 
