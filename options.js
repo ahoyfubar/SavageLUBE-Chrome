@@ -46,9 +46,6 @@ function loadSettings() {
   }
 
   document.getElementById("save").addEventListener("click", saveSettings);
-  document.getElementById("cancel").addEventListener("click", function () {
-    window.close();
-  });
 }
 
 function applyActionToUser(row, users) {
@@ -85,10 +82,10 @@ function saveSettings() {
   });
 
   var status = document.getElementById("status");
-  status.textContent = "Options saved";
+  status.textContent = "Preferences saved";
   setTimeout(function () {
     status.textContent = "";
-    window.close();
+    location.reload();
   }, 1000);
 }
 

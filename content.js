@@ -1,15 +1,39 @@
 // content.js
 
-if (document.body.classList.contains("article-section-savage-love")) {
-  // Set us up to receive messages from the app
-  chrome.runtime.onMessage.addListener(handleMessage);
-  // Let the extension know we're here
-  chrome.runtime.sendMessage({
-    message: "DOMContentLoaded",
+if (typeof safari !== "undefined") {
+  console.log("SlogBlocker on Safari");
+  document.addEventListener("DOMContentLoaded", function (event) {
+    if (document.body.classList.contains("article-section-savage-love")) {
+      // Set us up to receive messages from the app
+      safari.self.addEventListener("message", handleMessageSafari);
+      // Let the application know the page was reloaded
+      safari.extension.dispatchMessage("DOMContentLoaded");
+    }
   });
+} else {
+  console.log("SlogBlocker on Chromium");
+  if (document.body.classList.contains("article-section-savage-love")) {
+    // Set us up to receive messages from the app
+    chrome.runtime.onMessage.addListener(handleMessageChromium);
+    // Let the extension know we're here
+    chrome.runtime.sendMessage({
+      message: "DOMContentLoaded",
+    });
+  }
 }
 
-function handleMessage(request, sender, sendResponse) {
+function handleMessageSafari(event) {
+  // Filter comments in the DOM
+  if (event.name === "filterComments") {
+    filterComments(event.message);
+  }
+  // Refresh after user blocked/muted
+  else if (event.name === "settingsUpdated") {
+    location.reload();
+  }
+}
+
+function handleMessageChromium(request, sender, sendResponse) {
   // Filter comments in the DOM
   if (request.message === "filterComments") {
     filterComments(request.appInfo);
@@ -79,14 +103,22 @@ function addAvatarSelector(comment, name) {
     if (result) {
       var img = new Image();
       img.onload = function () {
-        chrome.runtime.sendMessage({
-          message: "changeAvatar",
-          userInfo: {
+        if (typeof safari !== "undefined") {
+          safari.extension.dispatchMessage("changeAvatar", {
             name: name,
             action: "avatar",
             avatar: result,
-          },
-        });
+          });
+        } else {
+          chrome.runtime.sendMessage({
+            message: "changeAvatar",
+            userInfo: {
+              name: name,
+              action: "avatar",
+              avatar: result,
+            },
+          });
+        }
         image[0].innerHTML = '<img src="' + result + '" style="width:100%;">';
       };
       img.onerror = function () {
@@ -112,13 +144,20 @@ function addBlockerMenu(byline, name) {
 
   button.onclick = function () {
     if (confirm("Are you sure you want to block " + name + "?")) {
-      chrome.runtime.sendMessage({
-        message: "blockUser",
-        userInfo: {
+      if (typeof safari !== "undefined") {
+        safari.extension.dispatchMessage("blockUser", {
           name: name,
           action: "hide",
-        },
-      });
+        });
+      } else {
+        chrome.runtime.sendMessage({
+          message: "blockUser",
+          userInfo: {
+            name: name,
+            action: "hide",
+          },
+        });
+      }
     }
   };
 
@@ -130,21 +169,35 @@ function addBlockerMenu(byline, name) {
 
   button.onclick = function () {
     if (button.classList.contains("unmute-user")) {
-      chrome.runtime.sendMessage({
-        message: "blockUser",
-        userInfo: {
+      if (typeof safari !== "undefined") {
+        safari.extension.dispatchMessage("blockUser", {
           name: name,
           action: "unmute",
-        },
-      });
+        });
+      } else {
+        chrome.runtime.sendMessage({
+          message: "blockUser",
+          userInfo: {
+            name: name,
+            action: "unmute",
+          },
+        });
+      }
     } else if (confirm("Are you sure you want to mute " + name + "?")) {
-      chrome.runtime.sendMessage({
-        message: "blockUser",
-        userInfo: {
+      if (typeof safari !== "undefined") {
+        safari.extension.dispatchMessage("blockUser", {
           name: name,
           action: "mute",
-        },
-      });
+        });
+      } else {
+        chrome.runtime.sendMessage({
+          message: "blockUser",
+          userInfo: {
+            name: name,
+            action: "mute",
+          },
+        });
+      }
     }
   };
   byline.parentNode.appendChild(menu);
