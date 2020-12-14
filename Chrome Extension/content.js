@@ -49,7 +49,9 @@ function filterComments(appInfo) {
   if (document.body.classList.contains("article-section-savage-love")) {
     var path = "/savage-love/comments";
     var href = window.location.href;
-    var baseurl = href.substring(0, href.indexOf(path) + path.length) + "/";
+    var pathlen = href.indexOf(path) + path.length;
+    var baseurl = href.substring(0, pathlen) + "/";
+    var tagno = parseInt(href.substring(pathlen + 1) || 0);
 
     var comments = document.body.getElementsByClassName("comment-container");
     for (var i = 0; i < comments.length; i++) {
@@ -87,6 +89,9 @@ function filterComments(appInfo) {
     }
     if (comments.length > 0 && appInfo.addTopPagination == true) {
       addTopPagination(comments);
+    }
+    if (tagno) {
+      adjustScrollToComment(tagno);
     }
   }
 }
@@ -332,4 +337,45 @@ function moveUserByline(comment) {
   header[0].appendChild(link);
   header[0].classList.add("text-muted");
   header[0].classList.add("byline-header");
+}
+
+function isElementInViewport(el) {
+  var rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+function scrollToComment(tagno) {
+  let target = document.getElementById("comment-" + tagno);
+  if (target && !isElementInViewport(target)) {
+    if (typeof chrome !== "undefined") {
+      const y = target.getBoundingClientRect().top + window.scrollY;
+      window.scroll({
+        top: y,
+        behavior: "smooth",
+      });
+    } else {
+      target.scrollIntoView();
+    }
+  }
+}
+
+function adjustScrollToComment(tagno) {
+  var scrollTimer = -1;
+  var scrollListener = function () {
+    if (scrollTimer !== -1) {
+      clearTimeout(scrollTimer);
+    }
+    scrollTimer = setTimeout(function () {
+      clearTimeout(scrollTimer);
+      window.removeEventListener("scroll", scrollListener);
+      scrollToComment(tagno);
+    }, 500);
+  };
+  window.addEventListener("scroll", scrollListener, false);
 }
