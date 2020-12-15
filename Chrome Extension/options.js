@@ -24,8 +24,8 @@ function insertRowForUser(table, user) {
   cell.appendChild(createSelectForAction(user.action));
 }
 
-function loadSettings() {
-  let settings = JSON.parse(localStorage.getItem("slogBlockerSettings"));
+function applySettings(settingsString) {
+  let settings = JSON.parse(settingsString);
   let options = document
     .getElementById("options")
     .getElementsByTagName("input");
@@ -33,19 +33,19 @@ function loadSettings() {
     options[i].checked = settings[options[i].id];
   }
 
-  if (settings.users.length > 0) {
-    let userElement = document.getElementById("users");
-    let userTable = userElement.getElementsByTagName("table")[0];
-    for (i = 0; i < settings.users.length; i++) {
-      let user = settings.users[i];
-      if (user.action !== "none") {
-        insertRowForUser(userTable, user);
-      }
-    }
-    userElement.hidden = false;
+  let userElement = document.getElementById("users");
+  let userTable = userElement.getElementsByTagName("table")[0];
+  while(userTable.rows.length > 0) {
+    userTable.deleteRow(0);
   }
-
-  document.getElementById("save").addEventListener("click", saveSettings);
+  for (i = 0; i < settings.users.length; i++) {
+    let user = settings.users[i];
+    if (user.action !== "none") {
+      insertRowForUser(userTable, user);
+    }
+  }
+  userElement.hidden = userTable.rows.length < 1;
+  return true;
 }
 
 function applyActionToUser(row, users) {
@@ -61,8 +61,8 @@ function applyActionToUser(row, users) {
   }
 }
 
-function saveSettings() {
-  let settings = JSON.parse(localStorage.getItem("slogBlockerSettings"));
+function retrieveSettings(settingsString) {
+  let settings = JSON.parse(settingsString);
   let options = document
     .getElementById("options")
     .getElementsByTagName("input");
@@ -75,7 +75,20 @@ function saveSettings() {
     applyActionToUser(users[i], settings.users);
   }
 
-  localStorage.setItem("slogBlockerSettings", JSON.stringify(settings));
+  return JSON.stringify(settings);
+}
+
+function loadSettingsChrome() {
+  if (applySettings(localStorage.getItem("slogBlockerSettings"))) {
+    var saveButton = document.getElementById("save");
+    saveButton.hidden = false;
+    saveButton.addEventListener("click", saveSettingsChrome);
+  }
+}
+
+function saveSettingsChrome() {
+  var settings = retrieveSettings(localStorage.getItem("slogBlockerSettings"));
+  localStorage.setItem("slogBlockerSettings", settings);
 
   chrome.runtime.sendMessage({
     message: "slogBlockerSettingsChanged",
@@ -89,4 +102,8 @@ function saveSettings() {
   }, 1000);
 }
 
-document.addEventListener("DOMContentLoaded", loadSettings);
+document.addEventListener("DOMContentLoaded", function() {
+  if (typeof safari === 'undefined') {
+    loadSettingsChrome();
+  }
+});
